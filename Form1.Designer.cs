@@ -55,7 +55,10 @@
             this.Main_Panel.Padding = new System.Windows.Forms.Padding(0, 25, 0, 0);
             this.Main_Panel.Size = new System.Drawing.Size(537, 395);
             this.Main_Panel.TabIndex = 1;
+            this.Main_Panel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Main_Panel_MouseClick);
+            this.Main_Panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Main_Panel_MouseDown);
             this.Main_Panel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Main_Panel_MouseMove);
+            this.Main_Panel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Main_Panel_MouseUp);
             this.Main_Panel.Move += new System.EventHandler(this.Main_Panel_Move);
             // 
             // label1
@@ -84,7 +87,7 @@
             this.startToolStripMenuItem,
             this.stopToolStripMenuItem});
             this.dateiToolStripMenuItem.Name = "dateiToolStripMenuItem";
-            this.dateiToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
+            this.dateiToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.dateiToolStripMenuItem.Text = "Datei";
             // 
             // startToolStripMenuItem

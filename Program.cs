@@ -9,22 +9,17 @@ using log4net;
 
 namespace SkeggFallLevelDesigner
 {
-     class Program
+    static class Program
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod
-().DeclaringType);
-
         /// <summary>
         /// Der Haupteinstiegspunkt für die Anwendung.
         /// </summary>
-          [STAThread]
+        [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
-            log.Debug("Application Starting");
-
         }
     }
 }
