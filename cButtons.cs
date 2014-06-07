@@ -5,24 +5,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using log4net;
 
 namespace SkeggFallLevelDesigner
 {
     class cButtons
     {
-        private List<int> pos_x, pos_y, width, height, state, bt_cat;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private List<int> pos_x, pos_y, width, height, img_x, img_y, state, bt_cat;
         private List<string> _name;
         private List<Color> colour;
         private Pen buttonPen;
         private Pen catPen;
         private Color cat_colour;
         private cButtonsCat buttonCats;
+
         public cButtons()
         {
             pos_x = new List<int>();
             pos_y = new List<int>();
             width = new List<int>();
             height = new List<int>();
+            img_x = new List<int>();
+            img_y = new List<int>();
             state = new List<int>();
             bt_cat = new List<int>();
             buttonPen = new Pen(Color.Black, 3);
@@ -34,7 +39,7 @@ namespace SkeggFallLevelDesigner
             colour = new List<Color>();
             cat_colour = Color.DarkGreen;
             catPen = new Pen(cat_colour, 3);
-            //MessageBox.Show("ID: " + Convert.ToString(buttonCats.id("Wolken")));//todo debug
+            log.Debug("ID: " + Convert.ToString(buttonCats.id("Wolken")));//todo debug
         }
 
         public void draw(Panel p, int margin, int margin_first, int margin_last)
@@ -42,94 +47,90 @@ namespace SkeggFallLevelDesigner
             Graphics g = p.CreateGraphics();
             int prev = 0, prev_cat = 0, button_number;
             bool first = true, last = false, last_cat = false;
-            string debug = "";
 
-            //MessageBox.Show(Convert.ToString(buttonCats.count()));
-
+            //log.Debug(Convert.ToString(buttonCats.count()));
 
             for (int i = 0; i < buttonCats.count(); i++)
             {//Gehe durch alle Button Kategorien
                 button_number = button_count(buttonCats.name(i));//Zähle Anzahl Buttons in derzeitiger Kategorie
-                //debug += Convert.ToString(" |first "+first)+"|j "+Convert.ToString(i)+"| buttonCats.count()"+Convert.ToString(buttonCats.count());
-                if (first)
-                {//Gehe hierrein um den Buttons jeweils in die pos den zugehörigen abstand zu schreiben, dann nochmal (gesteuert über first)
-                   
-                    for (int j = 0; j < button_number; j++)//Unfertig, weiße pos den jeweiligen Buttons zu, es fehlt abprüfen das nur buttons die wirklich in der kategorie sind genommen werden
+                //log.Debug += Convert.ToString(" |first "+first)+"|j "+Convert.ToString(i)+"| buttonCats.count()"+Convert.ToString(buttonCats.count());
+                int counter_row = 0;
+                for (int j = 0; j < button_count_all(); j++)//Unfertig, weiße pos den jeweiligen Buttons zu, es fehlt abprüfen das nur buttons die wirklich in der kategorie sind genommen werden
+                {
+                    if (bt_cat[j] == buttonCats.id(buttonCats.name(i)))//Gehe durch alle Buttons der derzeitigen Kategorie
                     {
-                      /*  prev = prev_cat;
-                        prev_cat += prev;//Setze Abstand y, zähle alle Bisherigen mit(alles untereinander(eig))
-                        prev = prev_cat + 25;*/
-                        debug +=Convert.ToString( (bt_cat[j] == buttonCats.id(buttonCats.name(i))));
-                        if (bt_cat[j] == buttonCats.id(buttonCats.name(i)))
+                        if(counter_row%2==0)//Berechnungen für doppelte Reihen
                         {
                             pos_x[j] = 25;
-                            pos_y[j] = margin + height[j] + prev;
-
-                            prev += pos_y[j];
-                            debug += "cat: "+buttonCats.name(i)+"j:  "+Convert.ToString(j)+" posx. " + Convert.ToString(pos_x[j]) + " posy. " + Convert.ToString(pos_y[j])+"\n";
-                
                         }
-                        //debug += " posx. " + Convert.ToString(pos_x[j]) + " posy. " + Convert.ToString(pos_y[j]);
-                    }
-                    //MessageBox.Show(Convert.ToString(i >= buttonCats.count() - 1));
-                    if (i >= buttonCats.count() - 1)//funktioniert
-                    {
-                        //gehe bei letzter Kategorie hier rein
-                        first = false;
-                        i = -1;
-                        //MessageBox.Show("hi");
-                    }
-                }
-                else
-                {
-                    /* if (i == buttonCats.count() - 1)
-                         last_cat = true;
-                     Rectangle rect_cat = new Rectangle(pos_x[i], prev_cat, width[i], height[i]);
-                     g.DrawRectangle(catPen, rect_cat);
-
-                     prev_cat += prev;
-                     prev = prev_cat + 25;*/
-
-                    //MessageBox.Show("buttoncats.name(i)" + buttonCats.name(i));
-                    /*MessageBox.Show(Convert.ToString(button_number));*/
-                    //MessageBox.Show("button_count_all()" + Convert.ToString(button_count_all()));
-                    for (int j = 0; j < button_count_all(); j++)//Richtige Zählung 
-                    {//Male Buttons
-                        //MessageBox.Show("buttonCats.name(i) "+buttonCats.name(i));
-                        //debug += "|_name[j]" + _name[j] + "|buttonCats.name(i) " + buttonCats.name(i) + "| ";
-                        if (bt_cat[j] == buttonCats.id(buttonCats.name(i)))
+                        else
                         {
-                            debug += "|bt_cat[j]" + bt_cat[j] + "|buttonCats.id(buttonCats.name(i)) " + Convert.ToString(buttonCats.id(buttonCats.name(i))) + "| ";
-                            buttonPen = new Pen(colour[j], 3);
-                            Rectangle rect = new Rectangle(pos_x[j], pos_y[j], width[j], height[j]);
-                         //   MessageBox.Show(Convert.ToString(pos_x[j]) + Convert.ToString(pos_y[j]) + Convert.ToString(width[j]) + Convert.ToString(height[j]));
-                            g.DrawRectangle(buttonPen, rect);
+                            pos_x[j] = 25 + margin + width[j];
+                            prev -= margin+height[j];
                         }
+                        counter_row++;
+                        pos_y[j] = margin + height[j] + prev;
+
+                        prev += margin + height[j];
+                        //log.Debug("cat: " + buttonCats.name(i) + "j:  " + Convert.ToString(j) + " posx. " + Convert.ToString(pos_x[j]) + " posy. " + Convert.ToString(pos_y[j]) + "\n");
+                        //log.Debug("test" + "3" + prev);
+                    }
+                    //log.Debug += " posx. " + Convert.ToString(pos_x[j]) + " posy. " + Convert.ToString(pos_y[j]);
+                }
+                prev += 30;
+                //log.Debug(Convert.ToString(i >= buttonCats.count() - 1));
+            }
+
+            for (int i = 0; i < buttonCats.count(); i++)
+            {//Gehe durch alle Button Kategorien
+                /* if (i == buttonCats.count() - 1)
+                     last_cat = true;
+                 Rectangle rect_cat = new Rectangle(pos_x[i], prev_cat, width[i], height[i]);
+                 g.DrawRectangle(catPen, rect_cat);
+
+                 prev_cat += prev;
+                 prev = prev_cat + 25;*/
+
+                //log.Debug("buttoncats.name(i)" + buttonCats.name(i));
+                /*log.Debug(Convert.ToString(button_number));*/
+                //log.Debug("button_count_all()" + Convert.ToString(button_count_all()));
+                for (int j = 0; j < button_count_all(); j++)//Richtige Zählung 
+                {//Male Buttons
+                    //log.Debug("buttonCats.name(i) "+buttonCats.name(i));
+                    //logdebug += "|_name[j]" + _name[j] + "|buttonCats.name(i) " + buttonCats.name(i) + "| ";
+                    if (bt_cat[j] == buttonCats.id(buttonCats.name(i)))
+                    {
+                        //logdebug += "|bt_cat[j]" + bt_cat[j] + "|buttonCats.id(buttonCats.name(i)) " + Convert.ToString(buttonCats.id(buttonCats.name(i))) + "| ";
+                        buttonPen = new Pen(colour[j], 3);
+                        Rectangle rect = new Rectangle(pos_x[j], pos_y[j], width[j], height[j]);//Lowlevel Funktion wird mit drawImage(C# Funktion) ersetzt
+                        //   log.Debug(Convert.ToString(pos_x[j]) + Convert.ToString(pos_y[j]) + Convert.ToString(width[j]) + Convert.ToString(height[j]));
+                        g.DrawRectangle(buttonPen, rect);
                     }
                 }
             }
-            MessageBox.Show("DEBUG: " + debug);
+
+
         }
 
         public void add(string add_name, int add_state, string cat_name, int add_width, int add_height, Color add_color)
         {
             try
             {
-                //MessageBox.Show(add_name); todo debug
+                //log.Debug(add_name); todo debug
                 _name.Add(add_name);
                 colour.Add(add_color);
                 state.Add(add_state);
                 pos_x.Add(10);
                 pos_y.Add(10);
                 bt_cat.Add(buttonCats.id(cat_name));//Erhalt der ID der Buttonkategorie, übergabe von string name, Name muss eindeutig sein.
-                //MessageBox.Show(Convert.ToString(this.id("add_name"))); todo debug
+                //log.Debug(Convert.ToString(this.id("add_name"))); todo debug
                 width.Add(add_width);
                 height.Add(add_height);
                 colour.Add(add_color);
             }
             catch (Exception e)
             {
-                MessageBox.Show("Fehler: " + e.Message);
+                log.Debug("Fehler: " + e.Message);
             }
         }
         public int id(string nam)
@@ -144,6 +145,7 @@ namespace SkeggFallLevelDesigner
             }
             return helper2;
         }
+
         public bool collision_detect(int mouse_x, int mouse_y)
         {
             for (int i = 0; i < _name.Count(); i++)
@@ -151,12 +153,13 @@ namespace SkeggFallLevelDesigner
                 if ((mouse_x <= pos_x[i] + width[i]) &&
             (mouse_x >= pos_x[i]) &&
             (mouse_y <= pos_y[i] + height[i]) &&
-            (mouse_y <= pos_y[i]))
+            (mouse_y >= pos_y[i]))
                 {
-                    MessageBox.Show("Hover");
+                    log.Debug("collission_detect:true");
                     return true;
                 }
             }
+            log.Debug("collission_detect:false");
             return false;
         }
         public int button_count(string nam)
@@ -177,9 +180,9 @@ namespace SkeggFallLevelDesigner
             return _name.Count();
         }
 
-        public string name(int ind)
+        public string name(int index)
         {//liefert Name der Kategorie an Position index ind, als string zurück
-            return this._name[ind];
+            return this._name[index];
         }
     }
 }

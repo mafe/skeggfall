@@ -32,7 +32,7 @@ namespace SkeggFallLevelDesigner
             _sounds_player = true;
             _sounds_music = true;
             _sounds_effects = true;
-            _frames_persec = 60;
+            _frames_persec = 6;
             _display_res_x = width;
             _display_res_y = height;
             _zoom_switch = false;
