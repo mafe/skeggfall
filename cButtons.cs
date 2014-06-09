@@ -12,13 +12,13 @@ namespace SkeggFallLevelDesigner
     class cButtons
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private List<int> pos_x, pos_y, width, height, img_x, img_y, state, bt_cat;
-        private List<string> _name;
-        private List<Color> colour;
-        private Pen buttonPen;
+        public static List<int> pos_x, pos_y, width, height, img_x, img_y, state, bt_cat;
+        public static List<string> _name;
+        public List<Color> colour;
+        public Pen buttonPen;
         private Pen catPen;
         private Color cat_colour;
-        private cButtonsCat buttonCats;
+        public static cButtonsCat buttonCats;
 
         public cButtons()
         {
@@ -175,14 +175,14 @@ namespace SkeggFallLevelDesigner
             return helper;
         }
 
-        private int button_count_all()
+        public static int button_count_all()
         {//Liefert Anzahl aller Buttons zurück
             return _name.Count();
         }
 
         public string name(int index)
         {//liefert Name der Kategorie an Position index ind, als string zurück
-            return this._name[index];
+            return _name[index];
         }
     }
 }

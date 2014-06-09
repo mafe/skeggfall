@@ -134,6 +134,25 @@ namespace SkeggFallLevelDesigner
         private void Main_Panel_MouseUp(object sender, MouseEventArgs e)
         {
             log.Debug("Drag stop:" + mouse_pos_x + "+," + mouse_pos_y);
+
+            for (int i = 0; i < cButtons.buttonCats.count(); i++)
+            {//Gehe durch alle Button Kategorien
+                log.Debug("buttoncats.name(i)" + cButtons.buttonCats.name(i));
+///                log.Debug(Convert.ToString(cButtons.button_number));
+                log.Debug("button_count_all()" + Convert.ToString(cButtons.button_count_all()));
+
+                for (int j = 0; j < cButtons.button_count_all(); j++)//Richtige Zählung 
+                {//Male Buttons
+                    log.Debug("buttonCats.name(i) " + cButtons.buttonCats.name(i));
+                    //logdebug += "|_name[j]" + _name[j] + "|buttonCats.name(i) " + buttonCats.name(i) + "| ";
+                    if (cButtons.bt_cat[j] == cButtons.buttonCats.id(cButtons.buttonCats.name(i)))
+                    {
+                        log.Debug("|bt_cat[j]" + cButtons.bt_cat[j] + "|buttonCats.id(buttonCats.name(i)) " + Convert.ToString(cButtons.buttonCats.id(cButtons.buttonCats.name(j))) + "| ");
+                        log.Debug(Convert.ToString(cButtons.pos_x[j]) + Convert.ToString(cButtons.pos_y[j]) + Convert.ToString(cButtons.width[j]) + Convert.ToString(cButtons.height[j]));
+
+                    }
+                }
+            }
         }
     }
 }
