@@ -195,12 +195,20 @@ namespace SkeggFallLevelDesigner
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+<<<<<<< HEAD
             //map.save(saveFileDialog1);
+=======
+            map.save(saveFileDialog1);
+>>>>>>> origin/mbecker
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
+<<<<<<< HEAD
             //map.load(openFileDialog1);
+=======
+            map.load(openFileDialog1);
+>>>>>>> origin/mbecker
         }
     }
 }
