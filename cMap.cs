@@ -302,20 +302,7 @@ namespace SkeggFallLevelDesigner
         public void changer()
         {
             changed_map = true;
-        }/*
-        public void load(OpenFileDialog OpenFileDialog1)
-        {/*
-            //Hier soll er die Datei laden und bei Ok drücken 
-            if (OpenFileDialog1.ShowDialog()==DialogResult.OK)
-            {
-                System.IO.File.ReadAllLines(OpenFileDialog1.FileName);
-                //Hier muss eine Forschleife hin, wo es jede Zeile in der Textdatei abfragt und er diese dann Zeichnet, sowie ins Array (über)schreibt.           
-                //das save_x, save_y und save_name muss natürlich ausgetauscht werden gegen Zeile 1, Zeile 2 und Zeile 3 z.B.         
-                buttons_arr[((save_x - margin_left) / 50), ((save_y - margin_top)) / 50].add(save_x, save_y, save_name);
-                changed_map = true;
-            }
-          
-        }*/
+        }
 
         public bool load(OpenFileDialog ur)
         {
@@ -324,64 +311,46 @@ namespace SkeggFallLevelDesigner
             {
                 Encoding encoding = Encoding.GetEncoding("ISO-8859-1");
                 XmlTextReader textReader = new XmlTextReader(ur.FileName);
-                int x = 0, y = 0;
+                int x = 0, y = 0, count = 3;
                 string nam = "Himmel";
-                while (textReader.Read())
+                try
                 {
-                    if (textReader.IsStartElement())
+                    while (textReader.Read())
                     {
-                        if (!textReader.IsEmptyElement)
+                        switch (textReader.NodeType)
                         {
-                            textReader.Read(); // Read the start tag. 
-                            if (textReader.IsStartElement())  // Handle nested elements.
-                            {
+                            case XmlNodeType.Element:
+
+                                break;
+                            case XmlNodeType.Text:
+                                break;
+                            case XmlNodeType.XmlDeclaration:
+                            case XmlNodeType.ProcessingInstruction:
                                 if (textReader.Name == "x")
-                                    x = Int32.Parse(textReader.ReadString());
+                                    x = Int32.Parse(textReader.Value);
                                 if (textReader.Name == "y")
-                                    y = Int32.Parse(textReader.ReadString());
+                                    y = Int32.Parse(textReader.Value);
                                 if (textReader.Name == "Name")
-                                    nam = textReader.ReadString();
-                            }
-                            buttons_arr[x, y].add(x * buttonsquare, y * buttonsquare, nam);
+                                    nam = textReader.Value;
+                                break;
+                            case XmlNodeType.Comment:
+                                //writer.WriteComment(reader.Value);
+                                break;
+                            case XmlNodeType.EndElement:
+                                //writer.WriteFullEndElement();
+                                break;
                         }
+                        buttons_arr[x, y].add(x * buttonsquare, y * buttonsquare, nam);
                     }
                 }
-
-                /*textReader.WriteStartDocument();
-                textReader.WriteComment("Skeggfall XML Map v.01\n");
-
-                textReader.WriteComment("skeggfall_map.xml\n");
-                textReader.Formatting = Formatting.Indented;
-                textReader.WriteStartElement("MapItems");*/
-                /*for (int i = 0; i < (mapwidth / buttonsquare); i++)
+                catch (Exception e)
                 {
-                    for (int j = 0; j < (mapheight / buttonsquare); j++)
-                    {
-                        if (buttons_arr[i, j].get_n() != "Himmel")
-                        {
-                            /*
-                            textReader.WriteStartElement(buttons_arr[i, j].get_n());
+                    MessageBox.Show("Fehler in Map Import: " + e.Message);
 
-                            textReader.WriteStartElement("Name");
-                            textReader.WriteElementString("", buttons_arr[i, j].get_n());
-                            textReader.WriteEndElement();
-
-                            textReader.WriteStartElement("x");
-                            textReader.WriteElementString("", i.ToString());
-                            textReader.WriteEndElement();
-
-                            textReader.WriteStartElement("y");
-                            textReader.WriteElementString("", j.ToString());
-                            textReader.WriteEndElement();
-                            textReader.WriteEndElement();*/
-                /*      }
-
-                  }
-              }/*
-              textReader.WriteEndElement();
-              textReader.WriteEndDocument();*/
+                }
                 textReader.Close();
                 helper = true;
+                changed_map = true;
             }
             return helper;
         }
@@ -390,12 +359,12 @@ namespace SkeggFallLevelDesigner
             bool helper = false;
             if (ur.ShowDialog() == DialogResult.OK)
             {
-                Encoding encoding = Encoding.GetEncoding("UTF-8");
+                Encoding encoding = Encoding.GetEncoding("ISO-8859-1");
                 XmlTextWriter textWriter = new XmlTextWriter(ur.FileName, encoding);
                 textWriter.WriteStartDocument();
-                textWriter.WriteComment("Skeggfall XML Map v.01\n");
+                textWriter.WriteComment("Skeggfall XML Map v.01");
 
-                textWriter.WriteComment("skeggfall_map.xml\n");
+                textWriter.WriteComment("skeggfall_map.xml");
                 textWriter.Formatting = Formatting.Indented;
                 textWriter.WriteStartElement("MapItems");
                 for (int i = 0; i < (mapwidth / buttonsquare); i++)
@@ -404,10 +373,20 @@ namespace SkeggFallLevelDesigner
                     {
                         if (buttons_arr[i, j].get_n() != "Himmel")
                         {
+
                             textWriter.WriteStartElement(buttons_arr[i, j].get_n());
+
+                            //textWriter.WriteStartElement("Name");
                             textWriter.WriteElementString("Name", buttons_arr[i, j].get_n());
+                            //textWriter.WriteEndElement();
+
+                            //textWriter.WriteStartElement("x");
                             textWriter.WriteElementString("x", i.ToString());
+                            //textWriter.WriteEndElement();
+
+                            //textWriter.WriteStartElement("y");
                             textWriter.WriteElementString("y", j.ToString());
+                            //textWriter.WriteEndElement();
                             textWriter.WriteEndElement();
                         }
 
