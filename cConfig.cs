@@ -10,7 +10,8 @@ namespace SkeggFallLevelDesigner
     {
         private bool _running;
         private bool _sounds_all, _sounds_player, _sounds_music, _sounds_effects;
-        private int _frames_persec, _display_res_x, _display_res_y, _zoom_val;
+        private int _display_res_x, _display_res_y, _zoom_val, _map_width, _map_height, _buttonsquare;
+        private double _frames_persec;
         private bool _zoom_switch;
         public cConfig()
         {
@@ -19,13 +20,16 @@ namespace SkeggFallLevelDesigner
             _sounds_player = true;
             _sounds_music = true;
             _sounds_effects = true;
-            _frames_persec = 60;
+            _frames_persec = 0.1;
             _display_res_x = 480;
             _display_res_y = 480;
             _zoom_switch = false;
             _zoom_val = 0;
+            _map_width = 900;
+            _map_height = 600;
+            _buttonsquare = 50;
         }
-        public cConfig(int width, int height)
+        public cConfig(int width, int height, int mw, int mh, int bs)
         {
             _running = false;
             _sounds_all = true;
@@ -37,6 +41,9 @@ namespace SkeggFallLevelDesigner
             _display_res_y = height;
             _zoom_switch = false;
             _zoom_val = 0;
+            _map_width = mw;
+            _map_height = mh;
+            _buttonsquare = bs;
         }
 
         public bool running
@@ -64,7 +71,7 @@ namespace SkeggFallLevelDesigner
             set { this._sounds_effects = value; }
             get { return this._sounds_effects; }
         }
-        public int frames_persec
+        public double frames_persec
         {
             set { this._frames_persec = value; }
             get { return this._frames_persec; }
@@ -83,6 +90,21 @@ namespace SkeggFallLevelDesigner
         {
             set { this._zoom_val = value; }
             get { return this._zoom_val; }
+        }
+        public int map_width
+        {
+            set { this._map_width = value; }
+            get { return this._map_width; }
+        }
+        public int map_height
+        {
+            set { this._map_height = value; }
+            get { return this._map_height; }
+        }
+        public int buttonsquare
+        {
+            set { this._buttonsquare = value; }
+            get { return this._buttonsquare; }
         }
     }
 }
