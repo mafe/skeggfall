@@ -8,11 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
 using System.IO;
-<<<<<<< HEAD
-
-=======
 using System.Xml;
->>>>>>> origin/mbecker
 
 namespace SkeggFallLevelDesigner
 {
@@ -140,11 +136,7 @@ namespace SkeggFallLevelDesigner
                             buttons.button_draw(buttons_arr[i, j].get_x(), buttons_arr[i, j].get_y(), buttons_arr[i, j].get_n(), p, 1);
                     }
                 }
-<<<<<<< HEAD
-               // MessageBox.Show("hihi");
-=======
                 // MessageBox.Show("hihi");
->>>>>>> origin/mbecker
                 g.Dispose();
                 changed_map = false;
             }
@@ -191,11 +183,7 @@ namespace SkeggFallLevelDesigner
                 button_id = buttons.statefinder(2);
             else if (buttons.statefinder(3) != -1)
                 button_id = buttons.statefinder(3);
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> origin/mbecker
             if (collision_detect(mouse_x, mouse_y, buttons.buttonWidth, margin_top) != -1 && button_id != -1)
             {
                 int count_x = 0;
@@ -230,11 +218,7 @@ namespace SkeggFallLevelDesigner
                                 }
                             }
                         }
-<<<<<<< HEAD
-                        if (p1onmap==false)
-=======
                         if (p1onmap == false)
->>>>>>> origin/mbecker
                         {
                             buttons_arr[((save_x - margin_left) / 50), ((save_y - margin_top)) / 50].add(save_x, save_y, save_name);
                             changed_map = true;
@@ -254,11 +238,7 @@ namespace SkeggFallLevelDesigner
                                 }
                             }
                         }
-<<<<<<< HEAD
-                        if (p2onmap==false)
-=======
                         if (p2onmap == false)
->>>>>>> origin/mbecker
                         {
                             buttons_arr[((save_x - margin_left) / 50), ((save_y - margin_top)) / 50].add(save_x, save_y, save_name);
                             changed_map = true;
@@ -322,42 +302,7 @@ namespace SkeggFallLevelDesigner
         public void changer()
         {
             changed_map = true;
-<<<<<<< HEAD
-        }
-        public void save(SaveFileDialog SaveFileDialog1)
-        {
-            if (SaveFileDialog1.ShowDialog()==DialogResult.OK)
-            {
-                StreamWriter Writer = null;
-                FileStream Stream;
-                Stream = new FileStream(SaveFileDialog1.FileName, FileMode.OpenOrCreate, FileAccess.Write);
-                Writer = new StreamWriter(Stream);
-                List<String> liste1 = new List<String>();
-                    for (int i = 0; i < buttons_arr.Length; i++)
-                    {
-                        //liste1.Add(Convert.ToString(buttons_arr.[i]));
-                    }
-                    for (int i = 0; i < liste1.Count; i++)
-                    {
-                        Writer.WriteLine(liste1[i]);
-                    }
-
-                }
-                /*System.IO.File.WriteAllLines(SaveFileDialog1.FileName, buttons_arr);
-
-                StreamReader reader = new StreamReader("c:\\test.txt", System.Text.Encoding.Default);
-                string[] values = reader.ReadToEnd().Split('\n');
-                for (int i = 0; i < 3; i++)
-                {
-                    System.Console.WriteLine(values[i]);
-                } */
-                
-                //SaveFileDialog1.Filename;
-            
-        }
-=======
         }/*
->>>>>>> origin/mbecker
         public void load(OpenFileDialog OpenFileDialog1)
         {/*
             //Hier soll er die Datei laden und bei Ok drücken 
@@ -369,14 +314,6 @@ namespace SkeggFallLevelDesigner
                 buttons_arr[((save_x - margin_left) / 50), ((save_y - margin_top)) / 50].add(save_x, save_y, save_name);
                 changed_map = true;
             }
-<<<<<<< HEAD
-          */
-        }
-
-    }
-}
-
-=======
           
         }*/
 
@@ -499,4 +436,3 @@ namespace SkeggFallLevelDesigner
 }
 
 
->>>>>>> origin/mbecker
