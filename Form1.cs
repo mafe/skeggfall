@@ -23,6 +23,8 @@ namespace SkeggFallLevelDesigner
         private Bitmap full_sprite;
         private cButtons left_sidebar;
         private cMap map;
+        private bool saved_changes = true;
+        private bool save_was_ok = false;
         public Form1()
         {
             /* runtime Maus Variablen */
@@ -55,6 +57,8 @@ namespace SkeggFallLevelDesigner
             left_sidebar.add("Spieler2", -1, "Player", 50, 50, Color.Red, 400, 0);
             left_sidebar.add("Himmel", -1, "Sky", 50, 50, Color.Cyan, 450, 0);
             map = new cMap(configuration.map_width, configuration.map_height, configuration.buttonsquare, left_sidebar.buttonWidth, 50);
+            /* Startet den Editor beim Starten ohne das man Start drücken muss */
+            start();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -105,18 +109,15 @@ namespace SkeggFallLevelDesigner
             e.Graphics.DrawRectangle(blackPen, rect);*/
         }
 
-        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        private void start()
         {
             configuration.running = true;
             left_sidebar.pos_calculation(10, 25, 10);
             timer1.Interval = Convert.ToInt32(1000 / configuration.frames_persec);
             timer1.Start();
+            saved_changes = true;
         }
 
-        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            timer1.Stop();
-        }
 
         private void Main_Panel_Move(object sender, EventArgs e)
         {
@@ -179,12 +180,8 @@ namespace SkeggFallLevelDesigner
                 left_sidebar.checker(mouse_pos_x, mouse_pos_y);
             }
             map.click(mouse_pos_x, mouse_pos_y, Main_Panel, configuration.buttonsquare, left_sidebar, 50);
+            saved_changes = map.saved_changes_return;
             left_sidebar.upclick(mouse_pos_x, mouse_pos_y);
-        }
-
-        private void invalidateclearToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Main_Panel.Invalidate();
         }
 
         private void Main_Panel_Paint(object sender, PaintEventArgs e)
@@ -195,12 +192,143 @@ namespace SkeggFallLevelDesigner
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //map.save(saveFileDialog1);
+            map.save(saveFileDialog1);
+            save_was_ok = map.save_was_ok_return;
+            if (save_was_ok == true)
+            {
+                saved_changes = true;
+            }
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //map.load(openFileDialog1);
+            map.load(openFileDialog1);
+        }
+
+        private void klein600X300ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (klein600X300ToolStripMenuItem.Checked == false)
+            {
+                klein600X300ToolStripMenuItem.Checked = true;
+                mittel900X600ToolStripMenuItem.Checked = false;
+                groß1200X900ToolStripMenuItem.Checked = false;
+                configuration = new cConfig(this.Width, this.Height, 600, 300, 50);
+                map = new cMap(configuration.map_width, configuration.map_height, configuration.buttonsquare, left_sidebar.buttonWidth, 50);
+                left_sidebar.changer();
+                map.changer();
+                Main_Panel.Invalidate();
+                start();
+            }
+        }
+
+        private void mittel900X600ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (mittel900X600ToolStripMenuItem.Checked == false)
+            {
+                klein600X300ToolStripMenuItem.Checked = false;
+                mittel900X600ToolStripMenuItem.Checked = true;
+                groß1200X900ToolStripMenuItem.Checked = false;
+                configuration = new cConfig(this.Width, this.Height, 900, 600, 50);
+                map = new cMap(configuration.map_width, configuration.map_height, configuration.buttonsquare, left_sidebar.buttonWidth, 50);
+                left_sidebar.changer();
+                map.changer();
+                Main_Panel.Invalidate();
+                start();
+            }
+        }
+
+        private void groß1200X900ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (groß1200X900ToolStripMenuItem.Checked == false)
+            {
+                klein600X300ToolStripMenuItem.Checked = false;
+                mittel900X600ToolStripMenuItem.Checked = false;
+                groß1200X900ToolStripMenuItem.Checked = true;
+                configuration = new cConfig(this.Width, this.Height, 1200, 900, 50);
+                map = new cMap(configuration.map_width, configuration.map_height, configuration.buttonsquare, left_sidebar.buttonWidth, 50);
+                left_sidebar.changer();
+                map.changer();
+                Main_Panel.Invalidate();
+                start();
+            }
+        }
+
+        private void startToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            start();
+        }
+
+        private void stopToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+        }
+
+        private void invalidateclearToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Main_Panel.Invalidate();
+        }
+
+        private void neuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            map = new cMap(configuration.map_width, configuration.map_height, configuration.buttonsquare, left_sidebar.buttonWidth, 50);
+            left_sidebar.changer();
+            map.changer();
+            Main_Panel.Invalidate();
+            start();
+        }
+
+        private void beendenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saved_changes == true)
+            {
+                this.Close();
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show("Möchten Sie ihre Änderungen Speichern?", "", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    map.save(saveFileDialog1);
+                    save_was_ok = map.save_was_ok_return;
+                    if (save_was_ok == true)
+                    {
+                        saved_changes = true;
+                        this.Close();
+                    }
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    this.Close();
+                }
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            if (saved_changes == true)
+            {
+                e.Cancel = false;
+            }
+            else
+            {
+                DialogResult dialogResult = MessageBox.Show("Möchten Sie ihre Änderungen Speichern?", "", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    map.save(saveFileDialog1);
+                    save_was_ok = map.save_was_ok_return;
+                    if (save_was_ok == true)
+                    {
+                        saved_changes = true;
+                        e.Cancel = false;
+                    }
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    e.Cancel = false;
+                }
+            }
+
         }
     }
 }
